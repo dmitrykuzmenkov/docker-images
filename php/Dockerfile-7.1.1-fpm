@@ -9,7 +9,8 @@ RUN apk update && mkdir -p /etc/php && \
       --prefix=/usr --sysconfdir=/etc \
       --localstatedir=/var --enable-mbstring \
       --enable-cli --with-layout=GNU --enable-sockets \
-      --with-mhash=yes --enable-intl=shared --enable-opcache \
+      --with-mhash=yes --enable-intl=shared \
+      --enable-opcache --enable-opcache-file \
       --enable-session --enable-filter --with-curl \
       --enable-json --with-config-file-path=/etc/php \
       --with-config-file-scan-dir=/etc/php/conf.d \
