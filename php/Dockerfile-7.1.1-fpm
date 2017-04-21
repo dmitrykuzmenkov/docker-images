@@ -3,7 +3,7 @@ MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 
 ENV BUILD_DEPS="curl autoconf automake build-base zlib-dev libxml2-dev curl-dev libedit-dev jpeg-dev libpng-dev gd-dev icu-dev"
 RUN apk update && mkdir -p /etc/php && \
-  apk add libxml2 libpng libjpeg libcurl $BUILD_DEPS && \
+  apk add openssl libxml2 libpng libjpeg libcurl $BUILD_DEPS && \
   curl -sSL http://sg2.php.net/get/php-7.1.1.tar.gz/from/this/mirror | tar xzf - && \
     cd php-7.1.1 && ./configure --disable-all --disable-cgi \
       --prefix=/usr --sysconfdir=/etc \
