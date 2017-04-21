@@ -1,9 +1,15 @@
 # docker-images
 Docker images from hub.docker.com
 
-## php
+## Building
 ```bash
-cd php
-docker build -t dmitrykuzmenkov/php:7.1.1-fpm -f Dockerfile-7.1.1-fpm .
-docker push dmitrykuzmenkov/php:7.1.1-fpm
+./build [target] [version]
+```
+
+**target** - Target folder to build  
+**version** - Version of Dockerfile in target  
+
+Example:  
+```bash
+./build php 7.1.4-fpm
 ```

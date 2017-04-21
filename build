@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+target=$1
+version=$2
+
+if [[ -z "$target" || -z "$version" ]]; then
+  echo "Usage: $0 [target] [version]"
+fi
+
+docker build -t "dmitrykuzmenkov/$target:$version" -f "$target/Dockerfile-$version" "$target"
+docker push "dmitrykuzmenkov/$target:$version"
