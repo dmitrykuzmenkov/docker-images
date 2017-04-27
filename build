@@ -5,6 +5,7 @@ version=$2
 
 if [[ -z "$target" || -z "$version" ]]; then
   echo "Usage: $0 [target] [version]"
+  exit 1
 fi
 
 docker build -t "dmitrykuzmenkov/$target:$version" -f "$target/Dockerfile-$version" "$target"
