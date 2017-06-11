@@ -1,0 +1,27 @@
+FROM alpine:3.5
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV BUILD_DEPS="curl autoconf automake build-base zlib-dev libxml2-dev curl-dev libedit-dev jpeg-dev libpng-dev gd-dev icu-dev libmcrypt-dev"
+RUN apk update && mkdir -p /etc/php && \
+  apk add openssl libxml2 libpng libjpeg libcurl libmcrypt $BUILD_DEPS && \
+  curl -sSL http://sg2.php.net/get/php-7.1.6.tar.gz/from/this/mirror | tar xzf - && \
+    cd php-7.1.6 && ./configure --disable-all --disable-cgi \
+      --prefix=/usr --sysconfdir=/etc \
+      --localstatedir=/var --enable-mbstring \
+      --enable-cli --with-layout=GNU --enable-sockets \
+      --with-mhash=yes --enable-intl=shared \
+      --enable-opcache --enable-opcache-file \
+      --enable-session --enable-filter --with-curl \
+      --enable-json --with-config-file-path=/etc/php \
+      --with-config-file-scan-dir=/etc/php/conf.d \
+      --with-mysqli --enable-embedded-mysqli --enable-mysqlnd \
+      --with-pcre-regex --enable-xml --enable-libxml --with-pear \
+      --enable-fileinfo --with-gd --enable-gd-native-ttf \
+      --with-openssl --with-zlib --enable-fpm \
+      --with-mcrypt && \
+    make -j4 && make install && cd .. && rm -fr php-7.1.6 && \
+  apk del $BUILD_DEPS && \
+  rm -fr /var/cache/apk/*
+
+ENTRYPOINT ["php-fpm"]
+CMD ["-R", "-F"]
