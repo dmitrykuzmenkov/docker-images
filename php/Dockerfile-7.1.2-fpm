@@ -17,7 +17,8 @@ RUN apk update && mkdir -p /etc/php && \
       --with-mysqli --enable-embedded-mysqli --enable-mysqlnd \
       --with-pcre-regex --enable-xml --enable-libxml --with-pear \
       --enable-fileinfo --with-gd --enable-gd-native-ttf \
-      --with-openssl --with-zlib --enable-fpm && \
+      --with-openssl --with-zlib --enable-fpm \
+      --enable-bcmath && \
     make -j4 && make install && cd .. && rm -fr php-7.1.2 && \
   apk del $BUILD_DEPS && \
   rm -fr /var/cache/apk/*
