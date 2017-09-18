@@ -1,8 +1,9 @@
 FROM alpine:3.6
 MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 
-ENV build_deps="autoconf automake build-base libtool db-dev boost-dev openssl-dev libevent-dev"
-RUN apk add --update curl $build_deps && \
+ENV build_deps="autoconf automake build-base"
+ENV lib_deps="libtool db-dev boost-dev openssl-dev libevent-dev"
+RUN apk add --update curl $build_deps $lib_deps && \
   curl -sSL https://github.com/Bitcoin-ABC/bitcoin-abc/archive/v0.14.6.tar.gz | tar -xzf - && \
   cd bitcoin-abc-0.14.6 && ./autogen.sh && \
   ./configure --prefix=/usr --with-incompatible-bdb && \
