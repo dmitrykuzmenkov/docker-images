@@ -1,0 +1,11 @@
+FROM alpine:3.6
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="autoconf automake build-base libtool db-dev boost-dev openssl-dev libevent-dev go"
+RUN apk add --update curl $build_deps && \
+  curl -sSL https://github.com/ethereum/go-ethereum/archive/v1.7.0.tar.gz | tar -xzf - && \
+  cd go-ethereum-1.7.0 && \
+  make geth && cp -f ./build/bin/geth /usr/bin/geth && \
+  apk del $build_deps && rm -fr /var/cache/apk
+
+ENTRYPOINT ["geth"]
