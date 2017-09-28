@@ -10,4 +10,4 @@ RUN apk add --update curl $build_deps $lib_deps && \
   make && make install && \
   apk del $build_deps && rm -fr /var/cache/apk
 
-ENTRYPOINT bitcoind
+ENTRYPOINT ["bitcoind"]

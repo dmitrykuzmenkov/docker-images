@@ -8,4 +8,4 @@ RUN apk add --update curl $build_deps && \
   make geth && cp -f ./build/bin/geth /usr/bin/geth && \
   apk del $build_deps && rm -fr /var/cache/apk
 
-ENTRYPOINT geth
+ENTRYPOINT ["geth"]
