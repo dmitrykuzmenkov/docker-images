@@ -1,0 +1,17 @@
+FROM ubuntu:14.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+RUN apt-get update -y && \
+  apt-get install -y curl build-essential libssl-dev \
+    libdb-dev libdb++-dev libboost-all-dev git \
+    libssl1.0.0-dbg libdb-dev libdb++-dev \
+    libboost-all-dev libminiupnpc-dev \
+    libminiupnpc-dev libevent-dev libcrypto++-dev \
+    libgmp3-dev && \
+  curl -sSL https://github.com/Muvon/bitflip-token/archive/0.1.tar.gz | tar -xzf - && \
+  cd bitflip-token-0.1 && \
+  cd src && make -f makefile.unix && \
+  mv bitflipd /usr/bin/bitflipd && \
+  apt-get clean
+
+ENTRYPOINT bitflipd
