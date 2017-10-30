@@ -14,4 +14,4 @@ RUN apt-get update -y && \
   mv bitflipd /usr/bin/bitflipd && \
   apt-get clean
 
-ENTRYPOINT bitflipd
+ENTRYPOINT ["bitflipd"]
