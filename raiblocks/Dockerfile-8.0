@@ -9,7 +9,10 @@ RUN apk add --update $build_deps $lib_deps && \
   git submodule init && git submodule update --recursive --remote && \
   git checkout 70d1ac1fa1852b4e3a59af063c66464736df39cb && \
   git submodule update && \
-  cmake -Wno-dev BOOST_ROOT=/usr/include/boost/ . && \
+  cmake -Wno-dev BOOST_ROOT=/usr/include/boost/ \
+    ENABLE_AVX2=OFF RAIBLOCKS_GUI=OFF \
+    PERMUTE_WITH_GATHER=OFF \
+    PERMUTE_WITH_SHUFFLES=OFF . && \
   make && make install && mv ./rai_node /usr/bin/ && \
   apk del $build_deps && rm -fr /var/cache/apk
 
