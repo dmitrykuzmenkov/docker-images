@@ -5,7 +5,7 @@ ENV build_deps="autoconf automake build-base libtool db-dev boost-dev openssl-de
 RUN apk add --update curl $build_deps && \
   curl -sSL https://github.com/litecoin-project/litecoin/archive/v0.13.2.1.tar.gz | tar -xzf - && \
   cd litecoin-0.13.2.1 && ./autogen.sh && \
-  ./configure --prefix=/usr --with-incompatible-bdb && \
+  ./configure --prefix=/usr --with-incompatible-bdb --disable-wallet && \
   make && make install && \
   apk del $build_deps && rm -fr /var/cache/apk
 
