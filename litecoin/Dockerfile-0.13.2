@@ -1,12 +1,24 @@
-FROM alpine:3.6
+FROM ubuntu:14.04
 MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 
-ENV build_deps="autoconf automake build-base libtool db-dev boost-dev openssl-dev libevent-dev"
-RUN apk add --update curl $build_deps && \
+RUN apt-get update -y && \
+  apt-get install -y curl software-properties-common \
+    build-essential libtool \
+    autotools-dev automake pkg-config libssl-dev \
+    libevent-dev bsdmainutils libboost-system-dev \
+    libboost-filesystem-dev libboost-chrono-dev \
+    libboost-program-options-dev libboost-test-dev \
+    libboost-thread-dev libminiupnpc-dev libzmq3-dev && \
+  add-apt-repository ppa:bitcoin/bitcoin -y && \
+  apt-get update -y && \
+  apt-get install -y libdb4.8-dev libdb4.8++-dev && \
   curl -sSL https://github.com/litecoin-project/litecoin/archive/v0.13.2.1.tar.gz | tar -xzf - && \
-  cd litecoin-0.13.2.1 && ./autogen.sh && \
-  ./configure --prefix=/usr --with-incompatible-bdb --disable-wallet && \
+  cd litecoin-0.13.2.1 && \
+  ./autogen.sh && \
+  ./configure --prefix=/usr --with-incompatible-db --disable-wallet && \
   make && make install && \
-  apk del $build_deps && rm -fr /var/cache/apk
+  apt-get remove build-essential autotools-dev automake \
+    software-properties-common -y pkg-config && \
+  apt-get clean && rm -fr /litecoin-0.13.2.1
 
 ENTRYPOINT ["litecoind"]
