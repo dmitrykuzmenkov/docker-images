@@ -1,0 +1,14 @@
+FROM alpine:3.6
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="autoconf coreutils file git automake build-base wget"
+ENV lib_deps="snappy snappy-dev zlib zlib-dev bzip2 bzip2-dev lz4 lz4-dev linux-headers openssl-dev"
+RUN apk add --update curl $build_deps $lib_deps && \
+  git clone https://github.com/yinqiwen/ardb.git && \
+  cd ardb && git checkout 27ad2dab8e8b80c8c1f9366e75f317b8c4ddd15d && \
+  storage_engine=leveldb make && \
+  mv src/ardb-* /usr/bin/ && \
+  rm -fr /ardb && \
+  apk del $build_deps && rm -fr /var/cache/apk
+COPY redis-cli /usr/bin
+ENTRYPOINT ["ardb-server"]
