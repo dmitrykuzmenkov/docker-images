@@ -1,4 +1,4 @@
-FROM alpine:3.6
+FROM alpine:3.7
 MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 
 ENV BUILD_DEPS="curl autoconf automake build-base zlib-dev libxml2-dev curl-dev libedit-dev jpeg-dev libpng-dev gd-dev icu-dev openssl-dev"
