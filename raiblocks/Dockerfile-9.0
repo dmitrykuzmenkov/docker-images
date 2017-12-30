@@ -1,0 +1,21 @@
+FROM alpine:3.7
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="git autoconf automake build-base cmake"
+ENV lib_deps="python libtool db-dev boost-dev openssl-dev libevent-dev miniupnpc-dev"
+RUN apk add --update $build_deps $lib_deps && \
+  git clone https://github.com/clemahieu/raiblocks.git && \
+  cd raiblocks && \
+  git submodule init && git submodule update --recursive --remote && \
+  git checkout 0ee43edb8a39ca7bce32c252c55ae59d312f69ab && \
+  git submodule update && \
+  cmake -Wno-dev BOOST_ROOT=/usr/include/boost/ \
+    ENABLE_AVX2=OFF RAIBLOCKS_GUI=OFF \
+    PERMUTE_WITH_GATHER=OFF \
+    PERMUTE_WITH_SHUFFLES=OFF . && \
+  make && make install && mv ./rai_node /usr/bin/ && \
+  apk del $build_deps && rm -fr /var/cache/apk && \
+  cd .. && rm -fr raiblocks
+
+ENTRYPOINT ["rai_node"]
+CMD [ "--daemon" ]
