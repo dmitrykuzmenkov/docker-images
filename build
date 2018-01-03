@@ -8,5 +8,5 @@ if [[ -z "$target" || -z "$version" ]]; then
   exit 1
 fi
 
-docker build -t "dmitrykuzmenkov/$target:$version" -f "$target/Dockerfile-$version" "$target"
+docker build --network host -t "dmitrykuzmenkov/$target:$version" -f "$target/Dockerfile-$version" "$target"
 docker push "dmitrykuzmenkov/$target:$version"
