@@ -2,20 +2,24 @@ FROM alpine:3.7
 MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 
 ENV build_deps="git autoconf automake build-base cmake"
-ENV lib_deps="python libtool db-dev boost-dev openssl-dev libevent-dev miniupnpc-dev"
-RUN apk add --update $build_deps $lib_deps && \
+ENV lib_deps="python libtool db-dev openssl-dev libevent-dev miniupnpc-dev"
+RUN apk add --update curl $build_deps $lib_deps && \
+  curl -sSL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz | tar -xzf - && \
+  mv boost_1_66_0 boost.src && \
+  cd boost.src && ./bootstrap.sh && ./b2 --prefix=boost --build-dir=boost.build link=static install && cd .. && \
   git clone https://github.com/clemahieu/raiblocks.git && \
   cd raiblocks && \
   git submodule init && git submodule update --recursive --remote && \
   git checkout c7bf58d11feec73069954709f20382e348405fd4 && \
   git submodule update && \
-  cmake -Wno-dev BOOST_ROOT=/usr/include/boost/ \
+  curl -sSL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz | tar -xzf - -C boost.src && \
+  cmake -Wno-dev BOOST_ROOT=/boost.src \
     ENABLE_AVX2=OFF RAIBLOCKS_GUI=OFF \
     PERMUTE_WITH_GATHER=OFF \
     PERMUTE_WITH_SHUFFLES=OFF . && \
   make && make install && mv ./rai_node /usr/bin/ && \
   apk del $build_deps && rm -fr /var/cache/apk && \
-  cd .. && rm -fr raiblocks
+  cd .. && rm -fr /raiblocks && rm -fr /boost.src
 
 ENTRYPOINT ["rai_node"]
 CMD [ "--daemon" ]
