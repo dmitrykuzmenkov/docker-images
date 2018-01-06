@@ -10,7 +10,7 @@ RUN apk add --update curl $build_deps $lib_deps && \
   git clone https://github.com/clemahieu/raiblocks.git && \
   cd raiblocks && \
   git submodule init && git submodule update --recursive --remote && \
-  git checkout c7bf58d11feec73069954709f20382e348405fd4 && \
+  git checkout 8c1114ec8b120cfa99de50a7358414ddda0eb99f && \
   git submodule update && \
   cmake -Wno-dev \
     ENABLE_AVX2=OFF RAIBLOCKS_GUI=OFF \
