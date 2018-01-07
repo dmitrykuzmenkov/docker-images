@@ -1,7 +1,7 @@
-FROM alpine:3.5
-MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+FROM alpine:3.7
+LABEL maintainer="Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>"
 
-ENV BUILD_DEPS="curl autoconf automake build-base zlib-dev libxml2-dev curl-dev libedit-dev jpeg-dev libpng-dev gd-dev icu-dev"
+ENV BUILD_DEPS="curl autoconf automake build-base openssl-dev zlib-dev libxml2-dev curl-dev libedit-dev jpeg-dev libpng-dev gd-dev icu-dev"
 RUN apk update && mkdir -p /etc/php && \
   apk add openssl libxml2 libpng libjpeg libcurl $BUILD_DEPS && \
   curl -sSL http://sg2.php.net/get/php-7.1.12.tar.gz/from/this/mirror | tar xzf - && \
@@ -13,6 +13,7 @@ RUN apk update && mkdir -p /etc/php && \
       --enable-opcache --enable-opcache-file \
       --enable-session --enable-filter --with-curl \
       --enable-json --with-config-file-path=/etc/php \
+      --enable-soap \
       --with-config-file-scan-dir=/etc/php/conf.d \
       --with-mysqli --enable-embedded-mysqli --enable-mysqlnd \
       --with-pcre-regex --enable-xml --enable-libxml --with-pear \
