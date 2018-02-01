@@ -16,5 +16,5 @@ RUN apk add --update $build_deps libtool sqlite-dev && \
   apk del $build_deps && rm -fr /var/cache/apk
 WORKDIR /src
 ENTRYPOINT ["node"]
-CMD ["app.js"]
+CMD ["index.js"]
 
