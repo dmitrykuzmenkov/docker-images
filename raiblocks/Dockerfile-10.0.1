@@ -19,7 +19,7 @@ RUN apt update && \
     PERMUTE_WITH_SHUFFLES=OFF . && \
   make && make install && mv ./rai_node /usr/bin/ && \
   mv librai_lib.so /usr/lib/ && \
-  apt remove $build_deps && apt clean all && \
+  apt remove -y $build_deps && apt clean all && \
   rm -fr /var/cache/apt && \
   cd .. && rm -fr /raiblocks && rm -fr /boost.src 
 
