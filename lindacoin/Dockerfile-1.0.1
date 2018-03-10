@@ -1,0 +1,22 @@
+FROM ubuntu:14.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="software-properties-common build-essential git autoconf automake gcc cmake binutils"
+ENV lib_deps="libgmp3-dev python-dev libtool libicu-dev libdb-dev libssl-dev libevent-dev libminiupnpc-dev"
+RUN apt-get update && \
+  apt-get install -y curl $build_deps $lib_deps && \
+  add-apt-repository ppa:bitcoin/bitcoin -y && \
+  apt-get update -y && \
+  apt-get install -y libdb4.8-dev libdb4.8++-dev && \
+  curl -sSL https://dl.bintray.com/boostorg/release/1.65.0/source/boost_1_65_0.tar.gz | tar -xzf - && \
+  mv boost_1_65_0 boost.src && \
+  cd boost.src && ./bootstrap.sh && ./b2 --prefix=/usr --build-dir=boost.build --without-mpi link=static install && cd .. && \
+  curl -sSL https://github.com/Lindacoin/Linda/archive/1.0.1.3.tar.gz | tar -xzf - && \
+  mv Linda-1.0.1.3 /src && cd /src/src && \
+  make -f makefile.unix && \
+  strip Lindad && \
+  mv Lindad /usr/bin/lindad && \
+  apt-get remove -y $build_deps && apt-get clean all && \
+  rm -fr /var/cache/apt && rm -fr /src && rm -fr /boost.src
+
+ENTRYPOINT ["lindad"]
