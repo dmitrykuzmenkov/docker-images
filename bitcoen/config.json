@@ -1,0 +1,13 @@
+{
+  "p2pPort": 6013,
+  "httpServer": "0.0.0.0",
+  "httpPort": 3001,
+  "enableMessaging": true,
+  "autofix": true,
+  "fallOnErrors": true,
+  "disableRpcPassword": true,
+  "blockAcceptCount": 0,
+  "disableMining": true,
+  "enableAddressRotation": true,
+  "workDir": "/data"
+}
