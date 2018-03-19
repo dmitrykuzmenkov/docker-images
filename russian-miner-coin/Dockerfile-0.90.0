@@ -9,17 +9,18 @@ RUN apt-get update -y && \
   curl -sSL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz | tar -xzf - && \
   mv boost_1_66_0 boost.src && \
   cd boost.src && ./bootstrap.sh && ./b2 --prefix=/usr --build-dir=boost.build --without-mpi link=static install && cd .. && \
-  curl -sSL https://github.com/CryptoManiac/rmcd/archive/0.90-rmc1.tar.gz | tar -xzf - && \
-  cd rmcd-0.90-rmc1 && \
+  curl -sSL https://github.com/RussianMiningCoin/rmcd/archive/0.90-rmc2.tar.gz | tar -xzf - && \
+  mv rmcd-0.90-rmc2 rmcd-src && \
+  cd rmcd-src && \
   scons && \
-  mkdir -p /opt/ripple/bin/ && \
-  mv build/rippled /opt/ripple/bin/ && \
-  mv conf/rippled.cfg.example /opt/ripple/rippled.cfg && \
-  mv conf/validators.txt.example /opt/ripple/validators.txt && \
+  mkdir -p /opt/rmcd/bin/ && \
+  mv build/rmcd /opt/rmcd/bin/ && \
+  mv conf/rmcd.cfg.example /opt/rmcd/rmcd.cfg && \
+  mv conf/validators.txt.example /opt/rmcd/validators.txt && \
   apt remove -y $build_deps && apt clean all && \
   rm -fr /var/cache/apt && \
-  cd .. && rm -fr /rmcd-0.90-rmc1 && rm -fr /boost.src
+  cd .. && rm -fr /rmcd-src && rm -fr /boost.src
   
 EXPOSE 41234
-ENTRYPOINT ["/opt/ripple/bin/rippled"]
-CMD ["--net", "--silent", "--conf", "/etc/opt/ripple/rippled.cfg"]
+ENTRYPOINT ["/opt/ripple/bin/rmcd"]
+CMD ["--net", "--silent", "--conf", "/etc/opt/rmcd/rippled.cfg"]
