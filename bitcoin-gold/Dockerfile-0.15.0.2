@@ -1,0 +1,16 @@
+FROM alpine:3.7
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="autoconf automake build-base"
+ENV lib_deps="libtool db-dev boost-dev openssl-dev libevent-dev libsodium-dev"
+RUN apk add --update curl $build_deps $lib_deps && \
+  curl -sSL https://github.com/BTCGPU/BTCGPU/archive/v0.15.0.2.tar.gz | tar -xzf - &&\
+  cd BTCGPU-0.15.0.2 && ./autogen.sh && \
+  ./configure --prefix=/usr \
+    --with-incompatible-bdb \
+    --disable-wallet && \
+  make && make install && \
+  rm -fr /BTCGPU-0.15.0.2 && \
+  apk del $build_deps && rm -fr /var/cache/apk
+
+ENTRYPOINT ["bgoldd"]
