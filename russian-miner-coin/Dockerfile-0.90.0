@@ -22,5 +22,5 @@ RUN apt-get update -y && \
   cd .. && rm -fr /rmcd-src && rm -fr /boost.src
   
 EXPOSE 41234
-ENTRYPOINT ["/opt/ripple/bin/rmcd"]
-CMD ["--net", "--silent", "--conf", "/etc/opt/rmcd/rippled.cfg"]
+ENTRYPOINT ["/opt/rmcd/bin/rmcd"]
+CMD ["--net", "--silent", "--conf", "/etc/opt/rmcd/rmcd.cfg"]
