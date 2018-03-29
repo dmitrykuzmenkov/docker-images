@@ -1,0 +1,21 @@
+FROM ubuntu:16.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="curl git scons ctags cmake pkg-config protobuf-compiler python-software-properties"
+ENV lib_deps="libprotobuf-dev libssl-dev libboost-all-dev"
+
+RUN apt-get update -y && \ 
+  apt-get install -y $build_deps $lib_deps && \
+  curl -sSL https://github.com/casinocoin/casinocoind/archive/4.0.1.tar.gz | tar -xzf - && \
+  cd casinocoind-4.0.1 && \
+  scons && \
+  mv build/casinocoind /usr/bin/ && \
+  mv doc/casinocoind-example.cfg /etc/casinocoind.cfg && \
+  mv doc/validators-example.txt /etc/validators.txt && \
+  apt-get remove -y $build_deps && apt clean all && \
+  rm -fr /var/cache/apt && \
+  cd .. && rm -fr /casinocoind-4.0.1
+  
+EXPOSE 17771
+ENTRYPOINT ["casinocoind"]
+CMD ["--net", "--silent", "--conf", "/etc/casinocoind.cfg"]
