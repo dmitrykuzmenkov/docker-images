@@ -11,7 +11,7 @@ RUN apk add --update $build_deps libtool sqlite-dev && \
   make && make install && cd .. && rm -fr libsodium-1.0.15 && \
   git clone https://github.com/BTWhite/BTWChain.git && \
   mv BTWChain src && cd /src && \
-  git checkout fe88a78a625095ccd914571f10981c2beedfe241 && \
+  git checkout 88b96a7367b6cf451ea9523b0788a0f6fc5cfe03 && \
   npm install && \
   apk del $build_deps && rm -fr /var/cache/apk
 WORKDIR /src
