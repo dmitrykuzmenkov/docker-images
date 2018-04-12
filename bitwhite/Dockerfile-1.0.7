@@ -1,0 +1,20 @@
+FROM node:8.9.4-alpine
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="autoconf git file automake build-base python curl"
+RUN apk add --update $build_deps libtool sqlite-dev && \
+  curl -sSL http://www.sqlite.org/2018/sqlite-autoconf-3220000.tar.gz | tar xzf - && \
+  cd sqlite-autoconf-3220000 && ./configure --prefix=/usr && \
+  make && make install && cd ../ && rm -fr /sqlite-autoconf-3220000 && \
+  curl -sSL https://github.com/jedisct1/libsodium/releases/download/1.0.15/libsodium-1.0.15.tar.gz | tar -xzf - && \
+  cd libsodium-1.0.15 && ./configure --prefix=/usr && \
+  make && make install && cd .. && rm -fr libsodium-1.0.15 && \
+  git clone https://github.com/BTWhite/BTWChain.git && \
+  mv BTWChain src && cd /src && \
+  git checkout 335003883d4b0913f7c0d88f1709ddf078da2d76 && \
+  npm install && \
+  apk del $build_deps && rm -fr /var/cache/apk
+WORKDIR /src
+ENTRYPOINT ["node"]
+CMD ["index.js"]
+
