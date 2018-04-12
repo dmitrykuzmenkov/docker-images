@@ -1,0 +1,14 @@
+FROM node:9.8.0
+LABEL maintainer="Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>"
+
+RUN curl -sSL https://github.com/BitCoen/BitCoenWallet/archive/1.0.4b.tar.gz | tar -xzf - && \
+  mv BitCoenWallet-1.0.4b /src && cd /src && \
+  yarn && \
+  yarn cache clean
+
+COPY ./config.json /src/config.json
+WORKDIR /src
+EXPOSE 6013 3001
+VOLUME ["/data"]
+ENTRYPOINT ["node"]
+CMD ["main.js", "--autofix", "--fall-on-errors", "--disable-rpc-password", "--block-accept-count", "0", "--disable-mining", "--enable-address-rotation"]
