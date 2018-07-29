@@ -1,0 +1,15 @@
+FROM node:9.8.0
+LABEL maintainer="Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>"
+
+RUN git clone https://github.com/BitCoen/BitCoenWallet.git && \
+  cd BitCoenWallet && git checkout 28e4198cdf1c9e49b75722f83a916748fec1bcec && \
+  mv /BitCoenWallet /src && \
+  yarn && \
+  yarn cache clean
+
+COPY ./config.json /src/config.json
+WORKDIR /src
+EXPOSE 6013 3001
+VOLUME ["/data"]
+ENTRYPOINT ["node"]
+CMD ["main.js", "--autofix", "--fall-on-errors", "--disable-rpc-password", "--block-accept-count", "0", "--disable-mining", "--enable-address-rotation"]
