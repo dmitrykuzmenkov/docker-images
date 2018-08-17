@@ -1,0 +1,24 @@
+FROM ubuntu:14.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+RUN apt-get update -y && \
+  apt-get install -y curl software-properties-common \
+    build-essential libtool \
+    autotools-dev automake pkg-config libssl-dev \
+    libevent-dev bsdmainutils libboost-system-dev \
+    libboost-filesystem-dev libboost-chrono-dev \
+    libboost-program-options-dev libboost-test-dev \
+    libboost-thread-dev libminiupnpc-dev libzmq3-dev && \
+  add-apt-repository ppa:bitcoin/bitcoin -y && \
+  apt-get update -y && \
+  apt-get install -y libdb4.8-dev libdb4.8++-dev && \
+  curl -sSL https://github.com/litecoin-project/litecoin/archive/v0.15.1.tar.gz | tar -xzf - && \
+  cd litecoin-0.15.1 && \
+  ./autogen.sh && \
+  ./configure --prefix=/usr --with-incompatible-db --disable-wallet && \
+  make && make install && \
+  apt-get remove build-essential autotools-dev automake \
+    software-properties-common -y pkg-config && \
+  apt-get clean && rm -fr /litecoin-0.15.1
+
+ENTRYPOINT ["litecoind"]
