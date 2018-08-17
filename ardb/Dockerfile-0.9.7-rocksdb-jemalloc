@@ -1,0 +1,16 @@
+FROM centos:7
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="make build-essential cmake autoconf file git automake gcc gcc-c++ wget"
+ENV lib_deps="libstdc++ libgcc zlib zlib-devel bzip2 bzip2-devel kernel-headers openssl-devel coreutils"
+RUN yum install -y curl $build_deps $lib_deps && \
+  git clone https://github.com/dmitrykuzmenkov/ardb.git && \
+  cd ardb && git checkout 0c5b16ce3663d52e99add81d5cf2bce2c9844d52 && \
+  storage_engine=rocksdb MALLOC=jemalloc make && \
+  mv src/ardb-* /usr/bin/ && \
+  rm -fr /ardb && \
+  yum install -y epel-release && \
+  yum install -y jemalloc && \
+  yum remove -y $build_deps && rm -rf /var/cache/yum
+COPY redis-cli-centos7 /usr/bin/redis-cli
+ENTRYPOINT ["ardb-server"]
