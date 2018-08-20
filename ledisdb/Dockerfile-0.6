@@ -1,0 +1,31 @@
+FROM golang:1.10.3
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    ca-certificates curl git-core mercurial \
+    g++ dh-autoreconf pkg-config libgflags-dev \
+    liblz4-dev libsnappy-dev zlib1g-dev libbz2-dev \
+  && \
+  cd /tmp && \
+  curl -sSL https://github.com/facebook/rocksdb/archive/v5.14.2.tar.gz | tar -xzf - && \
+  cd rocksdb-5.14.2 && \
+  make shared_lib && \
+  mkdir -p /usr/local/rocksdb/lib && \
+  mkdir /usr/local/rocksdb/include && \
+  cp librocksdb.so* /usr/local/rocksdb/lib && \
+  cp /usr/local/rocksdb/lib/librocksdb.so* /usr/lib/ && \
+  cp -r include /usr/local/rocksdb/ && \
+  cd /tmp && rm -fr /tmp/rocksdb-5.14.2 && \
+  \
+  mkdir -p $GOPATH/src/github.com/siddontang && \
+  cd $GOPATH/src/github.com/siddontang && \
+  curl -sSL https://github.com/siddontang/ledisdb/archive/v0.6.tar.gz | tar -xzf - && \
+  mv ledisdb-0.6 ledisdb && \
+  cd ledisdb && \
+  ln -s ./cmd/vendor ./vendor && bash dev.sh && make && \
+  mv ./bin/ledis* $GOPATH/bin/ && \
+  cd / && rm -fr $GOPATH/src/github.com/siddontang
+
+COPY ./ledis.conf /etc/ledis.conf
+EXPOSE 6380
+CMD $GOPATH/bin/ledis-server -config=/etc/ledis.conf
