@@ -13,6 +13,7 @@ RUN apk update && mkdir -p /etc/php && \
       --enable-opcache --enable-opcache-file \
       --enable-session --enable-filter --with-curl \
       --enable-json --with-config-file-path=/etc/php \
+      --enable-soap \
       --with-config-file-scan-dir=/etc/php/conf.d \
       --with-mysqli --enable-embedded-mysqli --enable-mysqlnd \
       --with-pcre-regex --enable-xml --enable-libxml --with-pear \
