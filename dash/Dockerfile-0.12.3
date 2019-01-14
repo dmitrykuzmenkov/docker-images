@@ -4,10 +4,10 @@ MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
 ENV build_deps="autoconf automake build-base"
 ENV lib_deps="libtool db-dev boost-dev openssl-dev libevent-dev"
 RUN apk add --update curl $build_deps $lib_deps && \
-  curl -sSL https://github.com/dashpay/dash/archive/v0.12.3.2.tar.gz | tar -xzf - && \
-  cd dash-0.12.3.2 && ./autogen.sh && \
+  curl -sSL https://github.com/dashpay/dash/archive/v0.12.3.4.tar.gz | tar -xzf - && \
+  cd dash-0.12.3.4 && ./autogen.sh && \
   ./configure --prefix=/usr --with-incompatible-bdb && \
-  make && make install && rm -fr /dash-0.12.3.2 \
+  make && make install && rm -fr /dash-0.12.3.4 \
   apk del $build_deps && rm -fr /var/cache/apk
 
 ENTRYPOINT ["dashd"]
