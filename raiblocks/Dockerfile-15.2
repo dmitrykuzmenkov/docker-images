@@ -1,0 +1,27 @@
+FROM ubuntu:16.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="build-essential git autoconf automake gcc cmake binutils"
+ENV lib_deps="python-dev libtool libicu-dev libdb-dev libevent-dev libminiupnpc-dev"
+RUN apt update && \
+  apt install -y curl $build_deps $lib_deps && \
+  curl -sSL https://dl.bintray.com/boostorg/release/1.66.0/source/boost_1_66_0.tar.gz | tar -xzf - && \
+  mv boost_1_66_0 boost.src && \
+  cd boost.src && ./bootstrap.sh && ./b2 --prefix=/usr --build-dir=boost.build --without-mpi link=static install && cd .. && \
+  git clone https://github.com/nanocurrency/raiblocks.git && \
+  cd raiblocks && \
+  git submodule init && git submodule update --recursive --remote && \
+  git checkout 11530bfa3b1032b275e90f3671c7d523921591e5 && \
+  git submodule update && \
+  cmake -Wno-dev \
+    ENABLE_AVX2=OFF RAIBLOCKS_GUI=OFF \
+    PERMUTE_WITH_GATHER=OFF \
+    PERMUTE_WITH_SHUFFLES=OFF . && \
+  make && make install && mv ./rai_node /usr/bin/ && \
+  mv librai_lib.so /usr/lib/ && \
+  apt remove -y $build_deps && apt clean all && \
+  rm -fr /var/cache/apt && \
+  cd .. && rm -fr /raiblocks && rm -fr /boost.src 
+
+ENTRYPOINT ["rai_node"]
+CMD [ "--daemon" ]
