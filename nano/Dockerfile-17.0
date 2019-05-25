@@ -1,0 +1,26 @@
+FROM ubuntu:16.04
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="build-essential git wget autoconf automake gcc cmake binutils"
+ENV lib_deps="python-dev libtool libicu-dev libdb-dev libevent-dev libminiupnpc-dev"
+RUN apt update && \
+  apt install -y curl $build_deps $lib_deps && \
+  git clone https://github.com/nanocurrency/nano-node.git && \
+  cd nano-node && \
+  git submodule init && git submodule update --recursive --remote && \
+  git checkout e53667c97a8e65240f9be5d981c1e0c11349b03d && \
+  git submodule update && \
+  ./util/build_prep/bootstrap_boost.sh && \
+  cmake -Wno-dev \
+    ENABLE_AVX2=OFF NANO_GUI=OFF \
+    CRYPTOPP_CUSTOM=ON \
+    PERMUTE_WITH_GATHER=OFF \
+    PERMUTE_WITH_SHUFFLES=OFF . && \
+  make && make install && mv ./rai_node /usr/bin/ && \
+  mv librai_lib.so /usr/lib/ && \
+  apt remove -y $build_deps && apt clean all && \
+  rm -fr /var/cache/apt && \
+  cd .. && rm -fr /raiblocks && rm -fr /boost.src 
+
+ENTRYPOINT ["rai_node"]
+CMD [ "--daemon" ]
