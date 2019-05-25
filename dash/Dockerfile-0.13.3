@@ -1,0 +1,17 @@
+FROM alpine:3.6
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+ENV build_deps="autoconf automake build-base cmake gmp-dev"
+ENV lib_deps="libtool db-dev boost-dev openssl-dev libevent-dev"
+RUN apk add --update curl $build_deps $lib_deps && \
+  curl -sSL https://github.com/codablock/bls-signatures/archive/v20181101.zip > bls-signatures.zip && \
+  unzip bls-signatures.zip && \
+  cd bls-signatures-20181101 && \
+  cmake . && make && make install && cd .. && rm -fr bls-signatures-20181101 && \
+  curl -sSL https://github.com/dashpay/dash/releases/download/v0.13.3.0/dashcore-0.13.3.0.tar.gz | tar -xzf - && \
+  cd dashcore-0.13.3 && ./autogen.sh && \
+  ./configure --prefix=/usr --with-incompatible-bdb && \
+  make && make install && rm -fr /dashcore-0.13.3 \
+  apk del $build_deps && rm -fr /var/cache/apk
+
+ENTRYPOINT ["dashd"]
