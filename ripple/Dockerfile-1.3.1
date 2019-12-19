@@ -1,0 +1,10 @@
+FROM centos:7
+MAINTAINER Dmitrii Kuzmenkov <dmitrii@kuzmenkov.me>
+
+RUN rpm -Uvh https://mirrors.ripple.com/ripple-repo-el7.rpm && \
+  yum install -y --enablerepo=ripple-stable rippled-1.3.1 && \
+  yum clean all
+
+EXPOSE 51235
+ENTRYPOINT ["/opt/ripple/bin/rippled"]
+CMD ["--net", "--silent", "--conf", "/etc/opt/ripple/rippled.cfg"]
